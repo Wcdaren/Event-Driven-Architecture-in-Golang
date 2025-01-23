@@ -1,19 +1,16 @@
 package ddd
 
+// Aggregate represents a DDD aggregate
 type Aggregate interface {
 	Entity
 	AddEvent(event Event)
 	GetEvents() []Event
-	ClearEvents()
 }
 
+// AggregateBase provides a default implementation for Aggregate
 type AggregateBase struct {
 	ID     string
 	events []Event
-}
-
-func (a AggregateBase) GetID() string {
-	return a.ID
 }
 
 func (a *AggregateBase) AddEvent(event Event) {
@@ -22,8 +19,4 @@ func (a *AggregateBase) AddEvent(event Event) {
 
 func (a AggregateBase) GetEvents() []Event {
 	return a.events
-}
-
-func (a *AggregateBase) ClearEvents() {
-	a.events = make([]Event, 0)
 }

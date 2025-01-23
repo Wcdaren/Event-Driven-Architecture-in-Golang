@@ -60,10 +60,11 @@ func (h CreateOrderHandler) CreateOrder(ctx context.Context, cmd CreateOrder) er
 		return errors.Wrap(err, "order creation")
 	}
 
-	// publish domain events
+	// publish domain events and clear them
 	if err = h.domainPublisher.Publish(ctx, order.GetEvents()...); err != nil {
 		return err
 	}
+	order.ClearEvents() // 发布后清理事件
 
 	return nil
 }
