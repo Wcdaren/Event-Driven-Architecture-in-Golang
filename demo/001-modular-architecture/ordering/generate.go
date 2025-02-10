@@ -1,3 +1,3 @@
 package ordering
 
-// go:generate buf generate
+//go:generate buf generate
