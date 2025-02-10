@@ -1,8 +1,9 @@
-# For details on buf.yaml configuration, visit https://buf.build/docs/configuration/v2/buf-yaml
 version: v2
-lint:
-  use:
-    - STANDARD
 breaking:
   use:
     - FILE
+lint:
+  enum_zero_value_suffix: _UNSPECIFIED  # Changed from _UNKNOWN to _UNSPECIFIED
+  ignore:
+    - PACKAGE_VERSION_SUFFIX
+    - PACKAGE_DIRECTORY_MATCH          # Changed from except to ignore

@@ -15,26 +15,22 @@ var (
 
 type Order struct {
 	ddd.AggregateBase
-	Items  []*Item
-	Status OrderStatus
+	CustomerID string
+	PaymentID  string
+	InvoiceID  string
+	ShoppingID string
+	Items      []*Item
+	Status     OrderStatus
 }
 
 type Item struct {
-	ProductID string
-	Price     float64
-	Quantity  int
+	ProductID   string
+	StoreID     string
+	StoreName   string
+	ProductName string
+	Price       float64
+	Quantity    int
 }
-
-type OrderStatus string
-
-const (
-	OrderUnknown     OrderStatus = ""
-	OrderIsPending   OrderStatus = "pending"
-	OrderIsInProcess OrderStatus = "in-progress"
-	OrderIsReady     OrderStatus = "ready"
-	OrderIsCompleted OrderStatus = "completed"
-	OrderIsCancelled OrderStatus = "cancelled"
-)
 
 func CreateOrder(id string, items []*Item) (*Order, error) {
 	if len(items) == 0 {
