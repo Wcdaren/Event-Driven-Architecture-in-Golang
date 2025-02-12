@@ -10,9 +10,10 @@ import (
 	"DDDSample/ordering"
 	"database/sql"
 	"fmt"
+	"net/http"
 	"os"
 
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -34,7 +35,7 @@ func run() (err error) {
 
 	m := app{cfg: cfg}
 
-	m.db, err = sql.Open("pgx", cfg.PG.Conn)
+	// m.db, err = sql.Open("pgx", cfg.PG.Conn)
 	if err != nil {
 		return err
 	}
@@ -63,6 +64,9 @@ func run() (err error) {
 	if err = m.startupModules(); err != nil {
 		return err
 	}
+
+	// Mount general web resources
+	m.mux.Mount("/", http.FileServer(http.FS(web.WebUI)))
 
 	fmt.Println("server started")
 	defer fmt.Println("server stopped")

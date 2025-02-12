@@ -5,14 +5,15 @@ import (
 	"DDDSample/internal/monolith"
 	"DDDSample/ordering/internal/application"
 	"DDDSample/ordering/internal/infrastructure/persistence/memory"
+	"DDDSample/ordering/internal/presenters/grpc"
+	"DDDSample/ordering/internal/presenters/rest"
 	"context"
-
-	"google.golang.org/grpc"
+	"fmt"
 )
 
 type Module struct{}
 
-func (Module) Startup(ctx context.Context, mono monolith.Module) {
+func (Module) Startup(ctx context.Context, mono monolith.Monolith) error {
 	// 1. 注册领域事件处理器
 	domainDispatcher := ddd.NewEventDispatcher()
 	orders := memory.NewOrderRepository()
@@ -20,15 +21,22 @@ func (Module) Startup(ctx context.Context, mono monolith.Module) {
 	var app application.App
 
 	app = application.New(orders, domainDispatcher)
+	fmt.Println("Ordering module started")
 
 	// setup Driver adapters
+	if err := grpc.RegisterServer(app, mono.RPC()); err != nil {
+		fmt.Println(err)
+		return err
+	}
+	if err := rest.RegisterGateway(ctx, mono.Mux(), mono.Config().Rpc.Address()); err != nil {
+		fmt.Println(err)
+		return err
+	}
+	if err := rest.RegisterSwagger(mono.Mux()); err != nil {
+		fmt.Println(err)
+		return err
+	}
 
-	if err:= grpc.
 	return nil
-
-	// 2. 注册命令处理器
-	// 3. 注册查询处理器
-	// 4. 注册HTTP处理器
-	// 5. 注册gRPC处理器
 
 }

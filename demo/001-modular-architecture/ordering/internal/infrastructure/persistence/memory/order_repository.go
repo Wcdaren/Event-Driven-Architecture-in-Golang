@@ -28,7 +28,7 @@ func (r *OrderRepository) Find(ctx context.Context, orderID string) (*domain.Ord
 
 	if order, exists := r.orders[orderID]; exists {
 		// Return a deep copy to prevent external modifications
-		items := make([]domain.Item, len(order.Items))
+		items := make([]*domain.Item, len(order.Items))
 		copy(items, order.Items)
 
 		return &domain.Order{
@@ -52,7 +52,7 @@ func (r *OrderRepository) Save(ctx context.Context, order *domain.Order) error {
 	defer r.Unlock()
 
 	// Create a deep copy of the order to store
-	items := make([]domain.Item, len(order.Items))
+	items := make([]*domain.Item, len(order.Items))
 	copy(items, order.Items)
 
 	stored := &domain.Order{
@@ -80,7 +80,7 @@ func (r *OrderRepository) Update(ctx context.Context, order *domain.Order) error
 	}
 
 	// Create a deep copy of the order to store
-	items := make([]domain.Item, len(order.Items))
+	items := make([]*domain.Item, len(order.Items))
 	copy(items, order.Items)
 
 	stored := &domain.Order{

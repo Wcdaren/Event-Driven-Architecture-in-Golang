@@ -6,7 +6,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 )

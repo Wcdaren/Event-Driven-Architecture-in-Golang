@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"DDDSample/internal/ddd"
+	"DDDSample/ordering/internal/domain"
 	"context"
 	"database/sql"
 	"encoding/json"

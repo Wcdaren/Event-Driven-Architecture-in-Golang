@@ -1,12 +1,13 @@
 syntax = "proto3";
+package orderingpb.v1;
 
-package orderingpb;
+import "orderingpb/v1/messages.proto";
 
-import "orderingpb/messages.proto";
+option go_package = "github.com/demo/ordering/orderingpb/v1;orderingv1";
 
 service OrderingService {
   // rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse) {};
-  rpc GetOrder(GetOrderRequest) returns (GetOrderResponse) {};
+  rpc GetOrder(GetOrderRequest) returns (GetOrderResponse) {}
   // rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse) {};
   // rpc ReadyOrder(ReadyOrderRequest) returns (ReadyOrderResponse) {};
   // rpc CompleteOrder(CompleteOrderRequest) returns (CompleteOrderResponse) {};

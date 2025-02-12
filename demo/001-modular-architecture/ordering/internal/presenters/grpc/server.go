@@ -4,7 +4,7 @@ import (
 	"DDDSample/ordering/internal/application"
 	"DDDSample/ordering/internal/application/queries"
 	"DDDSample/ordering/internal/domain"
-	"DDDSample/ordering/orderingpb"
+	orderingv1 "DDDSample/ordering/orderingpb/v1"
 	"context"
 
 	"google.golang.org/grpc"
@@ -12,33 +12,33 @@ import (
 
 type server struct {
 	app application.App
-	orderingpb.UnimplementedOrderingServiceServer
+	orderingv1.UnimplementedOrderingServiceServer
 }
 
-var _ orderingpb.OrderingServiceServer = (*server)(nil)
+var _ orderingv1.OrderingServiceServer = (*server)(nil)
 
 func RegisterServer(app application.App, registrar grpc.ServiceRegistrar) error {
-	orderingpb.RegisterOrderingServiceServer(registrar, server{app: app})
+	orderingv1.RegisterOrderingServiceServer(registrar, server{app: app})
 	return nil
 }
 
-func (s server) GetOrder(ctx context.Context, request *orderingpb.GetOrderRequest) (*orderingpb.GetOrderResponse, error) {
+func (s server) GetOrder(ctx context.Context, request *orderingv1.GetOrderRequest) (*orderingv1.GetOrderResponse, error) {
 	order, err := s.app.GetOrder(ctx, queries.GetOrder{ID: request.GetId()})
 	if err != nil {
 		return nil, err
 	}
-	return &orderingpb.GetOrderResponse{
+	return &orderingv1.GetOrderResponse{
 		Order: s.orderFromDomain(order),
 	}, nil
 }
 
-func (s server) orderFromDomain(order *domain.Order) *orderingpb.Order {
-	items := make([]*orderingpb.Item, 0, len(order.Items))
+func (s server) orderFromDomain(order *domain.Order) *orderingv1.Order {
+	items := make([]*orderingv1.Item, 0, len(order.Items))
 	for _, item := range order.Items {
 		items = append(items, s.itemFromDomain(item))
 	}
 
-	return &orderingpb.Order{
+	return &orderingv1.Order{
 		Id:         order.ID,
 		CustomerId: order.CustomerID,
 		PaymentId:  order.PaymentID,
@@ -47,8 +47,8 @@ func (s server) orderFromDomain(order *domain.Order) *orderingpb.Order {
 	}
 }
 
-func (s server) itemFromDomain(item *domain.Item) *orderingpb.Item {
-	return &orderingpb.Item{
+func (s server) itemFromDomain(item *domain.Item) *orderingv1.Item {
+	return &orderingv1.Item{
 		StoreId:     item.StoreID,
 		ProductId:   item.ProductID,
 		StoreName:   item.StoreName,

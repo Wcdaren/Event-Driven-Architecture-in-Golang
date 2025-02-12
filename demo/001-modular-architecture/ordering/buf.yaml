@@ -1,9 +1,15 @@
 version: v2
+lint:
+  enum_zero_value_suffix: _UNKNOWN
+  except:
+    - PACKAGE_DIRECTORY_MATCH
+    - PACKAGE_VERSION_SUFFIX
 breaking:
   use:
     - FILE
-lint:
-  enum_zero_value_suffix: _UNSPECIFIED  # Changed from _UNKNOWN to _UNSPECIFIED
-  ignore:
-    - PACKAGE_VERSION_SUFFIX
-    - PACKAGE_DIRECTORY_MATCH          # Changed from except to ignore
+  except:
+    - EXTENSION_NO_DELETE
+    - FIELD_SAME_DEFAULT
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway

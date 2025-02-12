@@ -10,16 +10,16 @@ type GetOrder struct {
 }
 
 type GetOrderHandler struct {
-	orders domain.OrderRepository
+	repo domain.OrderRepository
 }
 
 func NewGetOrderHandler(orders domain.OrderRepository) GetOrderHandler {
 	return GetOrderHandler{
-		orders: orders,
+		repo: orders,
 	}
 }
 
 func (h GetOrderHandler) GetOrder(ctx context.Context, query GetOrder) (*domain.Order, error) {
-	order, err := h.orders.FindByID(ctx, query.ID)
+	order, err := h.repo.Find(ctx, query.ID)
 	return order, err
 }

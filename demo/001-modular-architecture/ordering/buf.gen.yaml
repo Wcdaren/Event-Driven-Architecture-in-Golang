@@ -1,18 +1,23 @@
 version: v2
 managed:
   enabled: true
-  override:
-    - file_option: go_package_prefix
-      value: github.com/Event-Driven-Architecture-in-Golang/demo/DDDSample/ordering/gen
 plugins:
-  # The protoc-gen-go stubs are required for grpc-go
-  - remote: buf.build/protocolbuffers/go
+  - local: protoc-gen-go
     out: .
-    # You almost always want to set this option with protoc-gen-go
     opt: paths=source_relative
-  - remote: buf.build/grpc/go
-    # Make sure to generate your grpc-go code to the same
-    # directory as protoc-gen-go
+  - local: protoc-gen-go-grpc
     out: .
-    # You almost always want to set this option with protoc-gen-go-grpc
     opt: paths=source_relative
+  - local: protoc-gen-grpc-gateway
+    # https://github.com/grpc-ecosystem/grpc-gateway?tab=readme-ov-file#3-external-configuration
+    out: .
+    opt:
+      - paths=source_relative
+      - grpc_api_configuration=internal/presenters/rest/api.annotations.yaml
+  - local: protoc-gen-openapiv2
+    out: internal/presenters/rest
+    opt:
+      - grpc_api_configuration=internal/presenters/rest/api.annotations.yaml
+      - openapi_configuration=internal/presenters/rest/api.openapi.yaml
+      - allow_merge=true
+      - merge_file_name=api

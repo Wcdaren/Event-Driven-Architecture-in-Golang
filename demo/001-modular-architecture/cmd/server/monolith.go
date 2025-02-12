@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 	"github.com/rs/zerolog"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -54,6 +54,7 @@ func (a *app) Waiter() waiter.Waiter {
 func (a *app) startupModules() error {
 	for _, module := range a.modules {
 		if err := module.Startup(a.Waiter().Context(), a); err != nil {
+			fmt.Println(err)
 			return err
 		}
 	}
@@ -63,7 +64,7 @@ func (a *app) startupModules() error {
 func (a *app) waitForWeb(ctx context.Context) error {
 	webServer := &http.Server{
 		Addr:    a.cfg.Web.Address(),
-		Handler: a.Mux(),
+		Handler: a.mux,
 	}
 	group, gCtx := errgroup.WithContext(ctx)
 
