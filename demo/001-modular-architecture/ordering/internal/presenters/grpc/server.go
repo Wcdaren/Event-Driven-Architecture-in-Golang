@@ -2,11 +2,13 @@ package grpc
 
 import (
 	"DDDSample/ordering/internal/application"
+	"DDDSample/ordering/internal/application/commands"
 	"DDDSample/ordering/internal/application/queries"
 	"DDDSample/ordering/internal/domain"
 	orderingv1 "DDDSample/ordering/orderingpb/v1"
 	"context"
 
+	"github.com/google/uuid"
 	"google.golang.org/grpc"
 )
 
@@ -32,6 +34,24 @@ func (s server) GetOrder(ctx context.Context, request *orderingv1.GetOrderReques
 	}, nil
 }
 
+// CreateOrder implements orderingv1.OrderingServiceServer.
+func (s server) CreateOrder(ctx context.Context, request *orderingv1.CreateOrderRequest) (*orderingv1.CreateOrderResponse, error) {
+	id := uuid.New().String()
+
+	items := make([]*domain.Item, 0, len(request.Items))
+
+	for _, item := range request.Items {
+		items = append(items, s.itemToDomain(item))
+		err := s.app.CreateOrder(ctx, commands.CreateOrder{
+			ID:         id,
+			CustomerID: request.GetCustomerId(),
+			Items:      items,
+		})
+		return &orderingv1.CreateOrderResponse{Id: id}, err
+	}
+	return nil, nil
+}
+
 func (s server) orderFromDomain(order *domain.Order) *orderingv1.Order {
 	items := make([]*orderingv1.Item, 0, len(order.Items))
 	for _, item := range order.Items {
@@ -44,6 +64,17 @@ func (s server) orderFromDomain(order *domain.Order) *orderingv1.Order {
 		PaymentId:  order.PaymentID,
 		Items:      items,
 		Status:     order.Status.String(),
+	}
+}
+
+func (s server) itemToDomain(item *orderingv1.Item) *domain.Item {
+	return &domain.Item{
+		ProductID:   item.GetProductId(),
+		StoreID:     item.GetStoreId(),
+		StoreName:   item.GetStoreName(),
+		ProductName: item.GetProductName(),
+		Price:       item.GetPrice(),
+		Quantity:    int(item.GetQuantity()),
 	}
 }
 

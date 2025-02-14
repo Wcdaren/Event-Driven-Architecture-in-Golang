@@ -7,19 +7,19 @@ openapiOptions:
           version: "1.0.0"
         basePath: /
   method:
-    # - method: orderingpb.OrderingService.CreateOrder
-    #   option:
-    #     operationId: createOrder
-    #     tags:
-    #       - Order
-    #     summary: Start a new order
+    - method: orderingpb.v1.OrderingService.CreateOrder
+      option:
+        operationId: createOrder
+        tags:
+          - Order
+        summary: Start a new order
     - method: orderingpb.v1.OrderingService.GetOrder
       option:
         operationId: getOrder
         tags:
           - Order
         summary: Get na order
-    # - method: orderingpb.OrderingService.CancelOrder
+    # - method: orderingpb.v1.OrderingService.CancelOrder
     #   option:
     #     operationId: cancelOrder
     #     tags:

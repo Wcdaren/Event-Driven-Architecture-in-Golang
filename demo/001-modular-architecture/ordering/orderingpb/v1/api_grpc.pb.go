@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OrderingServiceClient interface {
-	// rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse) {};
+	CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*CreateOrderResponse, error)
 	GetOrder(ctx context.Context, in *GetOrderRequest, opts ...grpc.CallOption) (*GetOrderResponse, error)
 }
 
@@ -32,6 +32,15 @@ type orderingServiceClient struct {
 
 func NewOrderingServiceClient(cc grpc.ClientConnInterface) OrderingServiceClient {
 	return &orderingServiceClient{cc}
+}
+
+func (c *orderingServiceClient) CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*CreateOrderResponse, error) {
+	out := new(CreateOrderResponse)
+	err := c.cc.Invoke(ctx, "/orderingpb.v1.OrderingService/CreateOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *orderingServiceClient) GetOrder(ctx context.Context, in *GetOrderRequest, opts ...grpc.CallOption) (*GetOrderResponse, error) {
@@ -47,7 +56,7 @@ func (c *orderingServiceClient) GetOrder(ctx context.Context, in *GetOrderReques
 // All implementations must embed UnimplementedOrderingServiceServer
 // for forward compatibility
 type OrderingServiceServer interface {
-	// rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse) {};
+	CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderResponse, error)
 	GetOrder(context.Context, *GetOrderRequest) (*GetOrderResponse, error)
 	mustEmbedUnimplementedOrderingServiceServer()
 }
@@ -56,6 +65,9 @@ type OrderingServiceServer interface {
 type UnimplementedOrderingServiceServer struct {
 }
 
+func (UnimplementedOrderingServiceServer) CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrder not implemented")
+}
 func (UnimplementedOrderingServiceServer) GetOrder(context.Context, *GetOrderRequest) (*GetOrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrder not implemented")
 }
@@ -70,6 +82,24 @@ type UnsafeOrderingServiceServer interface {
 
 func RegisterOrderingServiceServer(s grpc.ServiceRegistrar, srv OrderingServiceServer) {
 	s.RegisterService(&OrderingService_ServiceDesc, srv)
+}
+
+func _OrderingService_CreateOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderingServiceServer).CreateOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/orderingpb.v1.OrderingService/CreateOrder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderingServiceServer).CreateOrder(ctx, req.(*CreateOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _OrderingService_GetOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -97,6 +127,10 @@ var OrderingService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "orderingpb.v1.OrderingService",
 	HandlerType: (*OrderingServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateOrder",
+			Handler:    _OrderingService_CreateOrder_Handler,
+		},
 		{
 			MethodName: "GetOrder",
 			Handler:    _OrderingService_GetOrder_Handler,

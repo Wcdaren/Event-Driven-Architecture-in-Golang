@@ -5,6 +5,8 @@ import (
 	"DDDSample/internal/ddd"
 	"DDDSample/ordering/internal/domain"
 	"context"
+
+	"github.com/stackus/errors"
 )
 
 type CreateOrder struct {
@@ -28,7 +30,7 @@ func NewCreateOrderHandler(orders domain.OrderRepository, domainPublisher ddd.Ev
 func (h CreateOrderHandler) CreateOrder(ctx context.Context, cmd CreateOrder) error {
 	order, err := domain.CreateOrder(cmd.ID, cmd.Items)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to create order")
 	}
 
 	// 保存订单

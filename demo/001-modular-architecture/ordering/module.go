@@ -4,7 +4,7 @@ import (
 	"DDDSample/internal/ddd"
 	"DDDSample/internal/monolith"
 	"DDDSample/ordering/internal/application"
-	"DDDSample/ordering/internal/infrastructure/persistence/memory"
+	"DDDSample/ordering/internal/infrastructure/persistence/inmemory"
 	"DDDSample/ordering/internal/presenters/grpc"
 	"DDDSample/ordering/internal/presenters/rest"
 	"context"
@@ -16,7 +16,7 @@ type Module struct{}
 func (Module) Startup(ctx context.Context, mono monolith.Monolith) error {
 	// 1. 注册领域事件处理器
 	domainDispatcher := ddd.NewEventDispatcher()
-	orders := memory.NewOrderRepository()
+	orders := inmemory.NewOrderRepository()
 
 	var app application.App
 

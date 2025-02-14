@@ -6,6 +6,7 @@ toolchain go1.23.6
 
 require (
 	github.com/go-chi/chi/v5 v5.2.1
+	github.com/google/uuid v1.6.0
 	github.com/rs/zerolog v1.33.0
 	github.com/stackus/errors v0.1.7
 	golang.org/x/sync v0.11.0

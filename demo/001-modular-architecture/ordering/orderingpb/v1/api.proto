@@ -6,7 +6,7 @@ import "orderingpb/v1/messages.proto";
 option go_package = "github.com/demo/ordering/orderingpb/v1;orderingv1";
 
 service OrderingService {
-  // rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse) {};
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse) {}
   rpc GetOrder(GetOrderRequest) returns (GetOrderResponse) {}
   // rpc CancelOrder(CancelOrderRequest) returns (CancelOrderResponse) {};
   // rpc ReadyOrder(ReadyOrderRequest) returns (ReadyOrderResponse) {};
