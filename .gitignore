@@ -1,3 +1,4 @@
 node_modules
 pact.log
-.temp/
+.tmp/
+tmp/
